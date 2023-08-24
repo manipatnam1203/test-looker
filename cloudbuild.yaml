@@ -4,7 +4,7 @@ steps:
     args: ['clone', 'https://github.com/manipatnam1203/test-looker.git', '/workspace/repo']
     
   - name: 'gcr.io/cloud-builders/gsutil'
-    args: ['-m', 'rsync', '-r', '/workspace/repo', 'gs://test-cloudbuild-24']
+    args: ['-m', 'rsync', '-r', '/workspace/repo/dags', 'gs://test-cloudbuild-24/dags']
 
 
 options:
