@@ -5,3 +5,9 @@ steps:
     
   - name: 'gcr.io/cloud-builders/gsutil'
     args: ['-m', 'rsync', '-r', '/workspace/repo', 'gs://test-cloudbuild-24']
+
+
+options:
+  logging: { "cloudLoggingOnly": true }  # Specify cloud logging only
+  substitutions:
+    _BUCKET: 'gs://gcs-looker'
