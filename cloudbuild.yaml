@@ -1,7 +1,7 @@
 
 steps:
   - name: 'gcr.io/cloud-builders/git'
-    args: ['clone', https://github.com/manipatnam1203/test-looker.git', '/workspace/repo']
+    args: ['clone', 'https://github.com/manipatnam1203/test-looker.git', '/workspace/repo']
     
   - name: 'gcr.io/cloud-builders/gsutil'
     args: ['-m', 'rsync', '-r', '/workspace/repo', 'gs://test-cloudbuild-24']
