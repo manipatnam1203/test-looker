@@ -8,6 +8,4 @@ steps:
 
 
 options:
-  logging: { "cloudLoggingOnly": true }  # Specify cloud logging only
-  substitutions:
-    _BUCKET: 'gs://gcs-looker'
+  logging: CLOUD_LOGGING_ONLY
