@@ -24,8 +24,8 @@ steps:
       - '-c'
       - |
         while read -r file; do
-          if [[ -f "src/$file" ]]; then
-            gsutil cp "src/$file" "gs://my-cloud-storage-bucket/$file"
+          if [[ -f "dags/$file" ]]; then
+            gsutil cp "dags/$file" "gs://gcs-looker/dags/$file"
           fi
         done < changed_files.txt
   #           gsutil cp "src/$file" "gs://gcs-looker/dags/$file"
