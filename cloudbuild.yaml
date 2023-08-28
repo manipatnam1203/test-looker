@@ -1,46 +1,33 @@
-steps:
-  # Clone the repository
-  - name: 'gcr.io/cloud-builders/git'
-    args: ['clone', 'https://github.com/manipatnam1203/test-looker']
+# steps:
+#   - name: 'gcr.io/cloud-builders/git'
+#     args: ['clone', 'https://github.com/manipatnam1203/test-looker.git', '/workspace/repo']
     
-  
-  # Store the commit hash for reference
-  - name: 'alpine'
-    entrypoint: '/bin/sh'
-    args: ['-c', 'git rev-parse HEAD > /workspace/last_commit.txt']
+#   - name: 'gcr.io/cloud-builders/gsutil'
+#     args: ['-m', 'rsync', '-r', '/workspace/repo/dags', 'gs://gcs-looker/dags']
+steps:
+# Step 1: Clone the GitHub repository
+- name: 'gcr.io/cloud-builders/git'
+  args: ['clone', 'https://github.com/manipatnam1203/test-looker.git']
+# Step 2: Build Docker image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/looker-test:latest', '.']
+# Step 3: Push Docker image to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/looker-test:latest']
+# Step 4: Pull Docker image from Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', 'gcr.io/$PROJECT_ID/looker-test:latest']
+# Step 5: Extract files from Docker image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['create', '--name', 'artifact-container', 'gcr.io/$PROJECT_ID/looker-test:latest']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['cp', 'artifact-container:/app/dags', '.']
 
-  # List the changed files in the last commit
-  - name: 'alpine'
-    entrypoint: '/bin/sh'
-    args: ['-c', 'git diff-tree --no-commit-id --name-only -r $(git rev-parse HEAD) > /workspace/changed_files.txt']
-
-  # Filter out changes specific to the "dags" folder
-  - name: 'alpine'
-    entrypoint: '/bin/sh'
-    args: ['-c', 'grep "dags/" /workspace/changed_files.txt > /workspace/changed_dags.txt']
-  
-  # Build Docker image with all files
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/your-artifact:latest', '.']
-
-  # Push Docker image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/your-artifact:latest']
-
-  # Sync only the changed files in 'dags' folder to Google Cloud Storage
-  - name: 'google/cloud-sdk'
-    entrypoint: '/bin/bash'
-    args:
-    - '-c'
-    - |
-      while read -r file; do
-        gsutil cp $file gs://gcs-looker/dags/$file
-      done < /workspace/changed_dags.txt
-
-  #           gsutil cp "src/$file" "gs://gcs-looker/dags/$file"
+# Step 6: Upload files to Google Cloud Storage
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args: ['gsutil', '-m','rsync', '-r', './dags', 'gs://your-cloud-storage-bucket/']
+#  args: ['gsutil', 'cp', '-r', './files-to-transfer', 'gs://your-cloud-storage-bucket/']
 
 
 options:
   logging: CLOUD_LOGGING_ONLY
-
-# adding cache
