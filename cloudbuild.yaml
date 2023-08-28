@@ -33,7 +33,7 @@ steps:
 
 # Step 6: Upload files to Google Cloud Storage
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  args: ['gsutil', '-m','rsync', '-r', './dags', 'gs://your-cloud-storage-bucket/']
+  args: ['gsutil', '-m','rsync', '-r', './dags', 'gs://gcs-looker/dags']
 #  args: ['gsutil', 'cp', '-r', './files-to-transfer', 'gs://your-cloud-storage-bucket/']
 
 
