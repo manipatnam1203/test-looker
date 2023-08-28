@@ -10,12 +10,12 @@ steps:
       - '-c'
       - 'git log --name-only --pretty="format:" -1 > changed_files.txt'
 
-  # Get the short git commit hash for version tagging and store it as an env variable
+   # Get the short git commit hash for version tagging
   - name: 'alpine/git'
     entrypoint: '/bin/sh'
     args: 
       - '-c'
-      - 'echo "GIT_COMMIT_SHORT=$(git rev-parse --short HEAD)" >> $BUILD_SPEC_DIR/git_commit_short.env'
+      - 'echo $(git rev-parse --short HEAD) > /workspace/git_commit_short.txt'
 
   # Build the Docker image with all files and version tags
   - name: 'gcr.io/cloud-builders/docker'
@@ -23,14 +23,14 @@ steps:
     args:
       - '-c'
       - |
-        source $BUILD_SPEC_DIR/git_commit_short.env
+        GIT_COMMIT_SHORT=$(cat /workspace/git_commit_short.txt)
         docker build -t gcr.io/$PROJECT_ID/my-artifact:$GIT_COMMIT_SHORT -t gcr.io/$PROJECT_ID/my-artifact:latest .
   
   # Push the version-tagged Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/my-artifact']
-    env:
-      - 'GIT_COMMIT_SHORT=$(cat $BUILD_SPEC_DIR/git_commit_short.env)'
+    args: 
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/my-artifact'
 
   # Sync only changed files to Google Cloud Storage with version tagging
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
