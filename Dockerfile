@@ -6,4 +6,4 @@ WORKDIR /app
 
 
 # Copy files into the image
-COPY ./files-to-transfer /app/files-to-transfer
+COPY ./dags /app/dags

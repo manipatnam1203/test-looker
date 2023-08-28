@@ -29,11 +29,11 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['create', '--name', 'artifact-container', 'gcr.io/$PROJECT_ID/looker-test:latest']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['cp', 'artifact-container:/app/files-to-transfer', '.']
+  args: ['cp', 'artifact-container:/app/dags', '.']
 
 # Step 6: Upload files to Google Cloud Storage
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  args: ['gsutil', '-m','rsync', '-r', './files-to-transfer', 'gs://your-cloud-storage-bucket/']
+  args: ['gsutil', '-m','rsync', '-r', './dags', 'gs://your-cloud-storage-bucket/']
 #  args: ['gsutil', 'cp', '-r', './files-to-transfer', 'gs://your-cloud-storage-bucket/']
 
 
