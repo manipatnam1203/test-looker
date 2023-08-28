@@ -3,31 +3,40 @@ steps:
   - name: 'gcr.io/cloud-builders/git'
     args: ['clone', 'https://github.com/manipatnam1203/test-looker']
     
-  # Identify changed files
-  - name: 'alpine/git'
-    args: ['log', '--name-only', '--pretty="format:"', '-1']
+  
+  # Store the commit hash for reference
+  - name: 'alpine'
     entrypoint: '/bin/sh'
-    args: ['-c', 'git log --name-only --pretty="format:" -1 > changed_files.txt']
+    args: ['-c', 'git rev-parse HEAD > /workspace/last_commit.txt']
 
-  # Build the Docker image with all files
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/my-artifact:latest', '.']
+  # List the changed files in the last commit
+  - name: 'alpine'
+    entrypoint: '/bin/sh'
+    args: ['-c', 'git diff-tree --no-commit-id --name-only -r $(git rev-parse HEAD) > /workspace/changed_files.txt']
+
+  # Filter out changes specific to the "dags" folder
+  - name: 'alpine'
+    entrypoint: '/bin/sh'
+    args: ['-c', 'grep "dags/" /workspace/changed_files.txt > /workspace/changed_dags.txt']
   
-  # Push the Docker image to Artifact Registry
+  # Build Docker image with all files
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/my-artifact:latest']
-  
-  # Sync only changed files to Cloud Storage
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/your-artifact:latest', '.']
+
+  # Push Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/your-artifact:latest']
+
+  # Sync only the changed files in 'dags' folder to Google Cloud Storage
+  - name: 'google/cloud-sdk'
     entrypoint: '/bin/bash'
     args:
-      - '-c'
-      - |
-        while read -r file; do
-          if [[ -f "dags/$file" ]]; then
-            gsutil cp "dags/$file" "gs://gcs-looker/dags/$file"
-          fi
-        done < changed_files.txt
+    - '-c'
+    - |
+      while read -r file; do
+        gsutil cp $file gs://gcs-looker/dags/$file
+      done < /workspace/changed_dags.txt
+
   #           gsutil cp "src/$file" "gs://gcs-looker/dags/$file"
 
 
