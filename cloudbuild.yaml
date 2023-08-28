@@ -32,18 +32,28 @@ steps:
       - 'push'
       - 'gcr.io/$PROJECT_ID/my-artifact'
 
-  # Sync only changed files to Google Cloud Storage with version tagging
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: '/bin/bash'
     args:
       - '-c'
       - |
-        GIT_COMMIT_SHORT=$(cat ./git_commit_hash.txt)
         while read -r file; do
-          if [[ -f "src/$file" ]]; then
-            gsutil cp "src/$file" "gs://gcs-looker/dags/$file"
+          if [[ -f "$file" ]]; then
+            gsutil cp "$file" "gs://gcs-looker/dags/$file"
           fi
-        done < changed_files.txt
+        done < /workspace/changed_files.txt
+  # Sync only changed files to Google Cloud Storage with version tagging
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   entrypoint: '/bin/bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       GIT_COMMIT_SHORT=$(cat ./git_commit_hash.txt)
+  #       while read -r file; do
+  #         if [[ -f "src/$file" ]]; then
+  #           gsutil cp "src/$file" "gs://gcs-looker/dags/$file"
+  #         fi
+  #       done < changed_files.txt
 
 
 options:
