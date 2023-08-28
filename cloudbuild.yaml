@@ -1,7 +1,7 @@
 steps:
   # Clone the repository
   - name: 'gcr.io/cloud-builders/git'
-    args: ['clone', '$REPO_URL']
+    args: ['clone', 'https://github.com/manipatnam1203/test-looker']
   
   # Identify the changed files
   - name: 'alpine/git'
@@ -43,7 +43,7 @@ steps:
         GIT_COMMIT_SHORT=$(cat ./git_commit_hash.txt)
         while read -r file; do
           if [[ -f "src/$file" ]]; then
-            gsutil cp "src/$file" "gs://my-cloud-storage-bucket/$GIT_COMMIT_SHORT/$file"
+            gsutil cp "src/$file" "gs://gcs-looker/dags/$file"
           fi
         done < changed_files.txt
 
