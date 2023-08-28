@@ -17,7 +17,7 @@ steps:
       - '-c'
       - 'echo $(git rev-parse --short HEAD) > /workspace/git_commit_short.txt'
 
-  # Build the Docker image with all files and version tags
+  # Build the Docker image with all files
   - name: 'gcr.io/cloud-builders/docker'
     entrypoint: '/bin/bash'
     args:
@@ -26,12 +26,18 @@ steps:
         GIT_COMMIT_SHORT=$(cat /workspace/git_commit_short.txt)
         docker build -t gcr.io/$PROJECT_ID/my-artifact:$GIT_COMMIT_SHORT -t gcr.io/$PROJECT_ID/my-artifact:latest .
   
-  # Push the version-tagged Docker image to Artifact Registry
+  # Push the Docker image to Artifact Registry without using Cloud Build substitutions
   - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: '/bin/bash'
     args: 
-      - 'push'
-      - 'gcr.io/$PROJECT_ID/my-artifact'
+      - '-c'
+      - |
+        GIT_COMMIT_SHORT=$(cat /workspace/git_commit_short.txt)
+        docker push gcr.io/$PROJECT_ID/my-artifact:$GIT_COMMIT_SHORT
+        docker push gcr.io/$PROJECT_ID/my-artifact:latest
 
+
+    # Sync only changed files to Google Cloud Storage
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: '/bin/bash'
     args:
