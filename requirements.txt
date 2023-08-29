@@ -1,4 +1,4 @@
 pytest
-apache-airflow
+apache-airflow==2.5.3
 apache-airflow-providers-google
 google-cloud-bigquery
