@@ -14,6 +14,7 @@ default_args = {
 }
 
 
+
 dag = DAG(
     "denorm_capa_v1_airflow_dag_test",
     default_args=default_args,
