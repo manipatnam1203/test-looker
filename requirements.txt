@@ -1,2 +1,4 @@
 pytest
 apache-airflow
+apache-airflow-providers-google
+google-cloud-bigquery
