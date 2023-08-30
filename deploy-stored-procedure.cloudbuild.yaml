@@ -1,5 +1,4 @@
 steps:
-
 # Deploy the stored procedures in the BigQuery
 - name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: 'bash'
@@ -10,3 +9,6 @@ steps:
       --project_id=$_PROJECT_ID \
       --use_legacy_sql=false \
       < $_SQL_FILE
+
+options:
+  logging: CLOUD_LOGGING_ONLY
