@@ -4,6 +4,15 @@ steps:
     entrypoint: pip
     args: ["install", "-r", "utils/requirements.txt", "--user"]
 
+  # zip the dags directory
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args: ["-c", "tar -czvf dags-$(date '+%Y%m%d%H%M%S').tar.gz dags"]
+
+  # upload the zip file to gcs bucket (artifact)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args: ["gsutil", "cp", "dags*.tar.gz", "gs://${_DAGS_ARTIFACT_BUCKET}/dags/"]
+
   # run
   - name: python
     entrypoint: python
