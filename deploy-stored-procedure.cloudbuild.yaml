@@ -6,9 +6,9 @@ steps:
   - '-c'
   - |
     bq query \
-      --project_id=$_PROJECT_ID \
+      --project_id=${_PROJECT_ID} \
       --use_legacy_sql=false \
-      < $_SQL_FILE
+      < ${_SQL_FILE}
 
 options:
   logging: CLOUD_LOGGING_ONLY
