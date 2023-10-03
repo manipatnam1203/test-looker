@@ -1,25 +1,25 @@
-CREATE OR REPLACE PROCEDURE `globus-bq-stage.globus_util.INSERT_LOGS`(PREV_END_TIME INT64, CURR_TIME INT64, TABLE_NAME STRING, DAG_ID STRING, TRIGGER_NAME STRING)
-BEGIN
+-- CREATE OR REPLACE PROCEDURE `globus-bq-stage.globus_util.INSERT_LOGS`(PREV_END_TIME INT64, CURR_TIME INT64, TABLE_NAME STRING, DAG_ID STRING, TRIGGER_NAME STRING)
+-- BEGIN
 
--- inserting time records in logs table
-INSERT INTO `globus-bq-stage.globus_util.TIMESTAMP_LOGS` 
-(
-  P_ID, 
-  TABLE_NAME, 
-  RAW_TABLE_START_TIME, 
-  RAW_TABLE_END_TIME, 
-  CURRENT_TIME, 
-  DAG_ID, 
-  TRIGGER_NAME
-)
-VALUES
-(
-  CONCAT(DAG_ID, "_", TRIGGER_NAME, "_", TABLE_NAME), 
-  TABLE_NAME, 
-  PREV_END_TIME, 
-  CURR_TIME, 
-  CURR_TIME, 
-  DAG_ID, 
-  TRIGGER_NAME
-);
-END;
+-- -- inserting time records in logs table
+-- INSERT INTO `globus-bq-stage.globus_util.TIMESTAMP_LOGS` 
+-- (
+--   P_ID, 
+--   TABLE_NAME, 
+--   RAW_TABLE_START_TIME, 
+--   RAW_TABLE_END_TIME, 
+--   CURRENT_TIME, 
+--   DAG_ID, 
+--   TRIGGER_NAME
+-- )
+-- VALUES
+-- (
+--   CONCAT(DAG_ID, "_", TRIGGER_NAME, "_", TABLE_NAME), 
+--   TABLE_NAME, 
+--   PREV_END_TIME, 
+--   CURR_TIME, 
+--   CURR_TIME, 
+--   DAG_ID, 
+--   TRIGGER_NAME
+-- );
+-- END;
