@@ -1,24 +1,24 @@
 steps:
 - name: 'gcr.io/cloud-builders/git'
+  args:
+  - clone
+  - ${_REPO_SOURCE}
+
+- name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: 'bash'
   args:
   - '-c'
   - |
-    # Capture changed SQL files in the last commit
-    
-    changed_files=$(git diff --name-only HEAD^ HEAD -- 'bigquery/**/*.sql')
+    # Get a list of all the files that have changed in the last commit.
+    CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
 
-    # If there are changes, proceed with deployment
-    if [ -n "$changed_files" ]; then
-      for sql_file in $changed_files; do
-        bq query \
-          --project_id=${_PROJECT_ID} \
-          --use_legacy_sql=false \
-          < $sql_file
-      done
-    else
-      echo "No changes to SQL files in the last commit."
-    fi
+    # Filter the list of files to only include SQL files.
+    SQL_FILES=$(grep "\.sql$" <<< "${CHANGED_FILES}")
 
-options:
-  logging: CLOUD_LOGGING_ONLY
+    # Execute each of the SQL files in the list.
+    for SQL_FILE in ${SQL_FILES}; do
+      bq query \
+        --project_id=${_PROJECT_ID} \
+        --use_legacy_sql=false \
+        < "${SQL_FILE}"
+    done
