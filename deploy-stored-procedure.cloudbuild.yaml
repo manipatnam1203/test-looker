@@ -1,14 +1,25 @@
 steps:
-# Deploy the stored procedures in the BigQuery
-- name: 'gcr.io/cloud-builders/gcloud'
+- name: 'gcr.io/cloud-builders/git'
   entrypoint: 'bash'
   args:
   - '-c'
   - |
-    bq query \
-      --project_id=${_PROJECT_ID} \
-      --use_legacy_sql=false \
-      < ${_SQL_FILE}
+    # Capture changed SQL files in the last commit
+    changed_files=$(git diff --name-only $COMMIT_SHA^..$COMMIT_SHA -- bigquery/*.sql)
+
+    # If there are changes, proceed with deployment
+    if [ -n "$changed_files" ]; then
+      for sql_file in $changed_files; do
+        echo $sql_file >> files.txt
+        bq query \
+          --project_id=${_PROJECT_ID} \
+          --use_legacy_sql=false \
+          < $sql_file
+      done
+    else
+      echo "No changes to SQL files in the last commit."
+    fi
+    cat files.txt
 
 options:
   logging: CLOUD_LOGGING_ONLY
