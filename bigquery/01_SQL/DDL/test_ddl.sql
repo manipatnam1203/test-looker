@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE `synthetic-eon-241312.test_stored_procedure.CREATE_TABLE_DDL04`()
+CREATE OR REPLACE PROCEDURE `synthetic-eon-241312.test_stored_procedure.CREATE_TABLE_DDL05`()
 BEGIN
   CREATE OR REPLACE TABLE test_stored_procedure.sample_table (
     id INT64,
