@@ -8,7 +8,7 @@ steps:
     # Capture changed SQL files in the last commit
     git clone https://github.com/manipatnam1203/test-looker.git --branch main
     cd test-looker
-    changed_files=$(git diff --name-only HEAD^..HEAD | grep  'bigquery/')
+    changed_files=$(git diff --name-only HEAD^..HEAD | grep  -i '.sql')
 
     # If there are changes, proceed with deployment
     if [ -n "$changed_files" ]; then
