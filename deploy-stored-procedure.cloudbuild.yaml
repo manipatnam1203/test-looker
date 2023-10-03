@@ -5,8 +5,8 @@ steps:
   - '-c'
   - |
     # Capture changed SQL files in the last commit
-    previous_commit=$(git log --format="%H" -n 1 HEAD~1)
-    changed_files=$(git diff --name-only $previous_commit HEAD -- 'bigquery/**/*.sql')
+    
+    changed_files=$(git diff --name-only HEAD^ HEAD -- 'bigquery/**/*.sql')
 
     # If there are changes, proceed with deployment
     if [ -n "$changed_files" ]; then
