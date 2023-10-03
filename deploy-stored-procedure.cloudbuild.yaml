@@ -3,7 +3,6 @@ steps:
   args:
   - clone
   - 'https://github.com/manipatnam1203/test-looker.git'
-  - --branch=dev
 
 - name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: 'bash'
@@ -23,3 +22,7 @@ steps:
         --use_legacy_sql=false \
         < "${SQL_FILE}"
     done
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  
