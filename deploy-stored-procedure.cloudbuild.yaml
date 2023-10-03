@@ -1,15 +1,12 @@
 
 steps:
 - name: 'gcr.io/cloud-builders/git'
-  args: ['clone', 'https://github.com/manipatnam1203/test-looker.git']
-
-- name: 'gcr.io/cloud-builders/git'
   entrypoint: 'bash'
   args:
   - '-c'
   - |
     # Capture changed SQL files in the last commit
-    changed_files=$(git show --name-only | grep 'bigquery/')
+    changed_files=$(git show --name-only | grep '*.sql')
 
     # If there are changes, proceed with deployment
     if [ -n "$changed_files" ]; then
