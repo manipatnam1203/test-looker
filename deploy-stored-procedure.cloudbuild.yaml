@@ -5,12 +5,11 @@ steps:
   - '-c'
   - |
     # Capture changed SQL files in the last commit
-    changed_files=$(git diff --name-only $COMMIT_SHA^..$COMMIT_SHA -- bigquery/*.sql)
+    changed_files=$(git diff --name-only $COMMIT_SHA^..$COMMIT_SHA -- 'bigquery/**/*.sql')
 
     # If there are changes, proceed with deployment
     if [ -n "$changed_files" ]; then
       for sql_file in $changed_files; do
-        echo $sql_file >> files.txt
         bq query \
           --project_id=${_PROJECT_ID} \
           --use_legacy_sql=false \
@@ -19,7 +18,6 @@ steps:
     else
       echo "No changes to SQL files in the last commit."
     fi
-    cat files.txt
 
 options:
   logging: CLOUD_LOGGING_ONLY
