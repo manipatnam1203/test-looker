@@ -9,7 +9,7 @@ steps:
   - '-c'
   - |
     # Capture changed SQL files in the last commit
-    changed_files=$(git show --name-only | grep 'bigquery')
+    changed_files=$(git show --name-only | grep 'bigquery/')
 
     # If there are changes, proceed with deployment
     if [ -n "$changed_files" ]; then
