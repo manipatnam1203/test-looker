@@ -2,7 +2,8 @@ steps:
 - name: 'gcr.io/cloud-builders/git'
   args:
   - clone
-  - ${_REPO_SOURCE}
+  - 'https://github.com/manipatnam1203/test-looker.git'
+  - --branch=dev
 
 - name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: 'bash'
