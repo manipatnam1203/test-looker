@@ -6,7 +6,9 @@ steps:
   - '-c'
   - |
     # Capture changed SQL files in the last commit
-    changed_files=$(git show --name-only | grep '*.sql')
+    git clone https://github.com/manipatnam1203/test-looker.git --branch main
+    cd test-looker
+    changed_files=$(git diff --name-only $COMMIT_SHA^..$COMMIT_SHA | grep '*.sql')
 
     # If there are changes, proceed with deployment
     if [ -n "$changed_files" ]; then
