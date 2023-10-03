@@ -20,5 +20,5 @@ steps:
         < "${SQL_FILE}"
     done
   
-  options:
+options:
   logging: CLOUD_LOGGING_ONLY
