@@ -1,3 +1,6 @@
+substitutions:
+  CHANGED_FILES: $(git diff --name-only HEAD^ HEAD)
+
 steps:
 - name: 'gcr.io/cloud-builders/git'
   args:
@@ -9,20 +12,13 @@ steps:
   args:
   - '-c'
   - |
-    # Get a list of all the files that have changed in the last commit.
-    CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
-
-    # Filter the list of files to only include SQL files.
-    SQL_FILES=$(grep "\.sql$" <<< "${CHANGED_FILES}")
-
     # Execute each of the SQL files in the list.
-    for SQL_FILE in ${SQL_FILES}; do
+    for SQL_FILE in "${CHANGED_FILES}"; do
       bq query \
         --project_id=${_PROJECT_ID} \
         --use_legacy_sql=false \
         < "${SQL_FILE}"
     done
-
-options:
-  logging: CLOUD_LOGGING_ONLY
   
+  options:
+  logging: CLOUD_LOGGING_ONLY
