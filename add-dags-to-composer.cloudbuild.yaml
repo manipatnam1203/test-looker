@@ -21,3 +21,5 @@ steps:
 
 options:
   logging: CLOUD_LOGGING_ONLY
+  pool:
+    name: 'projects/synthetic-eon-241312/locations/us-central1/workerPools/test'
